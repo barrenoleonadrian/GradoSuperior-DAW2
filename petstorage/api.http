@@ -1,0 +1,27 @@
+### GET: Listar todos los mascotas
+GET http://localhost:3000/mascotas
+
+### POST: Crear un nuevo videojuego
+POST http://localhost:3000/mascotas
+Content-Type: application/json
+
+{
+    "nombre": "Manolo",
+    "raza": "Caniche",
+    "edad": "5",
+    "disponibilidad": "available"
+}
+
+### POST: Crear otro videojuego
+POST http://localhost:3000/mascotas
+Content-Type: application/json
+
+{
+    "nombre": "Rafa",
+    "raza": "Buldog",
+    "edad": "7",
+    "disponibilidad": "pending"
+}
+
+### DELETE: Borrar por ID (cambiar el ID por uno real de tu BD)
+DELETE http://localhost:3000/mascotas/AQUI_VA_EL_ID_REAL

@@ -1,0 +1,26 @@
+### GET: Listar todos los videojuegos
+GET http://localhost:3000/videojuegos
+
+### POST: Crear un nuevo videojuego
+POST http://localhost:3000/videojuegos
+Content-Type: application/json
+
+{
+    "titulo": "The Witcher 3",
+    "genero": "RPG",
+    "plataforma": "PC"
+}
+
+### POST: Crear otro videojuego
+POST http://localhost:3000/videojuegos
+Content-Type: application/json
+
+{
+    "titulo": "God of War",
+    "genero": "Acción",
+    "plataforma": "PlayStation"
+}
+
+### DELETE: Borrar por ID (cambiar el ID por uno real de tu BD)
+DELETE http://localhost:3000/videojuegos/AQUI_VA_EL_ID_REAL
+```

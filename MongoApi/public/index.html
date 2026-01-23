@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tienda de Videojuegos</title>
+    <link rel="stylesheet" href="stylesheets/style.css" />
+    <script src="main.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🎮 Tienda de Videojuegos</h1>
+        <p>Gestiona tu colección de videojuegos</p>
+      </header>
+
+      <!-- Formulario para agregar videojuegos -->
+      <section class="add-game-section">
+        <h2>Agregar Nuevo Videojuego</h2>
+        <form id="addGameForm">
+          <input
+            type="text"
+            id="titulo"
+            placeholder="Título del juego"
+            required
+          />
+          <input type="text" id="genero" placeholder="Género" required />
+          <input
+            type="text"
+            id="plataforma"
+            placeholder="Plataforma"
+            required
+          />
+          <button type="submit">Agregar Juego</button>
+        </form>
+      </section>
+
+      <!-- Lista de videojuegos -->
+      <section class="games-section">
+        <h2>Mis Videojuegos</h2>
+        <div id="gamesList" class="games-grid">
+          <!-- Los juegos se cargarán aquí dinámicamente -->
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="auth-container">
+    <section id="login-section">
+        <h2>Iniciar Sesión</h2>
+        <form id="loginForm">
+            <input type="email" id="login-email" placeholder="Email" required />
+            <input 
+                type="password" 
+                id="login-pass" 
+                placeholder="Contraseña" 
+                required 
+            />
+            <button type="submit">Entrar</button>
+        </form>
+        <p>
+            ¿No tienes cuenta?
+            <a href="#" onclick="toggleAuth()">Regístrate aquí</a>
+        </p>
+    </section>
+
+    <section id="register-section" style="display: none">
+        <h2>Crear Cuenta</h2>
+        <form id="registerForm">
+            <input 
+                type="text" 
+                id="reg-nombre" 
+                placeholder="Nombre completo" 
+                required 
+            />
+            <input type="email" id="reg-email" placeholder="Email" required />
+            <input 
+                type="password" 
+                id="reg-pass" 
+                placeholder="Contraseña" 
+                required 
+            />
+            <button type="submit">Registrarse</button>
+        </form>
+        <p>
+            ¿Ya tienes cuenta?
+            <a href="#" onclick="toggleAuth()">Inicia sesión</a>
+        </p>
+    </section>
+</div>
+<script src="login.js"></script>
+</body>
+</html>

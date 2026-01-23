@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tienda de Videojuegos</title>
+    <link rel="stylesheet" href="stylesheets/style.css" />
+    <script src="main.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Mascotas</h1>
+      </header>
+      <section id="login"></section>
+        <div id="petsList" class="pets-grid">
+          <!-- Los juegos se cargarán aquí dinámicamente -->
+        </div>
+        <div id="crear" class="pets-grid"></div>
+      <section class="add-game-section">
+        <h2>Agregar Nueva Mascota</h2>
+        <form id="addPetForm">
+          <input type="text" id="nombre" placeholder="Nombre de la perra" required />
+          <input type="text" id="raza" placeholder="Raza" required />
+          <input type="text" id="edad" placeholder="Edad" required />
+          <select id="disponibilidad">
+            <option value="disponible">Disponible</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="comprado">Comprado</option>
+          </select>
+          <button type="submit">Agregar Mascota</button>
+        </form>
+      </section>
+
+    </div>
+  </body>
+</html>

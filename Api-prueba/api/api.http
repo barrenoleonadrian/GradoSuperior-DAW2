@@ -1,0 +1,13 @@
+GET http://localhost:3000/motos
+
+###
+
+POST http://localhost:3000/motos
+Content-Type: application/json
+
+{
+    "marca": "yamaha",
+    "modelo": "Pornhub",
+    "caballos": "10000"
+}
+
