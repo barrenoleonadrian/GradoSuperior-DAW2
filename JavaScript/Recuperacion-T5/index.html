@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Hunter Grid</title>
+
+<style>
+body {
+    text-align: center;
+}
+
+#grid {
+    display: grid;
+    gap: 2px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+#panel {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 10px 0;
+}
+
+#panel p {
+    margin: 0;
+}
+
+.celda{
+    width:80px;
+    height:80px;
+    background-color:lightgray;
+    border:1px solid black;
+    cursor:pointer;
+}
+
+
+
+</style>
+
+</head>
+<body>
+
+<h1>Hunter Grid</h1>
+
+<form id="gameForm">
+
+<label>Filas:</label>
+<input type="number" id="fil" min="3" max="10" required>
+
+<label>Columnas:</label>
+<input type="number" id="col" min="3" max="10" required>
+
+<label>Velocidad:</label>
+<input type="number" id="vel" min="200" max="800" required>
+
+<label>Numero de trampas:</label>
+<input type="number" id="traps" min="1" required>
+
+<button type="submit">Empezar</button>
+
+</form>
+
+<hr>
+
+<div id="panel">
+
+<p>Vidas: <span id="vidas">3</span></p>
+<p>Capturas: <span id="capturas">0</span>/10</p>
+<p>Tiempo: <span id="tiempo">0</span></p>
+
+</div>
+
+<div id="grid"></div>
+
+<script src="main.js"></script>
+
+</body>
+</html>
