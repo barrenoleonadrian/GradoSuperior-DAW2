@@ -1,0 +1,44 @@
+# ============================================================
+#  Pruebas API REST – Clínica Veterinaria DAW2
+#  Requiere la extensión REST Client en VS Code
+# ============================================================
+
+@baseUrl = http://localhost/mvcrecuperacion/public
+
+# Credenciales API Basic: apiclinica:clinicaapi
+# Base64("apiclinica:clinicaapi") = YXBpY2xpbmljYTpjbGluaWNhYXBp
+
+### GET – Listar todos los dueños de mascotas
+GET {{baseUrl}}/api/personas
+Authorization: Basic YXBpY2xpbmljYTpjbGluaWNhYXBp
+
+###
+
+### POST – Crear un nuevo dueño
+POST {{baseUrl}}/api/personas
+Authorization: Basic YXBpY2xpbmljYTpjbGluaWNhYXBp
+Content-Type: application/json
+
+{
+    "nombre":    "Pedro",
+    "apellidos": "Sánchez Gómez",
+    "telefono":  "611222333",
+    "email":     "pedro@test.com"
+}
+
+###
+
+### DELETE – Eliminar la mascota con id 1
+DELETE {{baseUrl}}/api/mascota/1
+Authorization: Basic YXBpY2xpbmljYTpjbGluaWNhYXBp
+
+###
+
+### Prueba de error 401 – Sin autenticación
+GET {{baseUrl}}/api/personas
+
+###
+
+### Prueba de error 404 – Mascota que no existe
+DELETE {{baseUrl}}/api/mascota/9999
+Authorization: Basic YXBpY2xpbmljYTpjbGluaWNhYXBp

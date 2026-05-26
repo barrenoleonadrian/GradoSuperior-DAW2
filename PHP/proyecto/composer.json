@@ -1,0 +1,21 @@
+{
+    "name": "dwes/clinica",
+    "description": "Clínica Veterinaria DAW2",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Dwes\\Clinica\\": [
+                "app/librerias",
+                "app/controladores",
+                "app/modelos"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "Tu Nombre",
+            "email": "tu@email.com"
+        }
+    ],
+    "require": {}
+}
