@@ -7,4 +7,8 @@
                 "Sofia"
             ];
         }
+
+        public function getAll(): array{
+            return $this->getUsers();
+        }
     }
