@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apuntes PHP – OOP · MVC · APIs | DAW2 DWES</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3350;
+    --accent: #7c6af7;
+    --accent2: #38d9a9;
+    --accent3: #f7a94a;
+    --accent4: #f45b7a;
+    --text: #e2e8f0;
+    --muted: #8892a4;
+    --code-bg: #0d1117;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── Sidebar ── */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 24px 0;
+    z-index: 100;
+  }
+
+  #sidebar .logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  #sidebar .logo h1 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  #sidebar .logo p { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  #sidebar nav a {
+    display: block;
+    padding: 7px 20px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  #sidebar nav a:hover, #sidebar nav a.active {
+    color: var(--text);
+    border-left-color: var(--accent);
+    background: rgba(124,106,247,0.06);
+  }
+  #sidebar nav .section-label {
+    padding: 14px 20px 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── Main ── */
+  #content {
+    margin-left: 260px;
+    padding: 48px 56px;
+    max-width: 1060px;
+  }
+
+  /* ── Sections ── */
+  .section {
+    margin-bottom: 72px;
+    padding-top: 8px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-number {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .n1 { background: rgba(124,106,247,0.15); color: var(--accent); }
+  .n2 { background: rgba(56,217,169,0.15); color: var(--accent2); }
+  .n3 { background: rgba(247,169,74,0.15); color: var(--accent3); }
+  .n4 { background: rgba(244,91,122,0.15); color: var(--accent4); }
+
+  .section-header h2 { font-size: 1.5rem; font-weight: 700; }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 32px 0 12px;
+    color: var(--accent2);
+  }
+  h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 20px 0 8px;
+    color: var(--accent3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  p { margin-bottom: 12px; color: var(--text); }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 5px; }
+
+  /* ── Code blocks ── */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    position: relative;
+  }
+  pre .label {
+    position: absolute;
+    top: 8px; right: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+  p code, li code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--accent2);
+  }
+
+  /* Syntax highlight manual */
+  .kw { color: #c792ea; }   /* keywords */
+  .fn { color: #82aaff; }   /* functions */
+  .st { color: #c3e88d; }   /* strings */
+  .cm { color: #546e7a; font-style: italic; }  /* comments */
+  .nb { color: #f78c6c; }   /* numbers / booleans */
+  .cl { color: #ffcb6b; }   /* class names */
+  .vr { color: #89ddff; }   /* variables */
+  .op { color: #89ddff; }   /* operators */
+
+  /* ── Callout boxes ── */
+  .callout {
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 18px 0;
+    font-size: 0.88rem;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .info  { background: rgba(124,106,247,0.1); border-left: 3px solid var(--accent); }
+  .tip   { background: rgba(56,217,169,0.1);  border-left: 3px solid var(--accent2); }
+  .warn  { background: rgba(247,169,74,0.1);  border-left: 3px solid var(--accent3); }
+  .danger{ background: rgba(244,91,122,0.1);  border-left: 3px solid var(--accent4); }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 0.85rem;
+  }
+  th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 2px solid var(--border);
+  }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge-purple { background: rgba(124,106,247,0.2); color: var(--accent); }
+  .badge-green  { background: rgba(56,217,169,0.2);  color: var(--accent2); }
+  .badge-yellow { background: rgba(247,169,74,0.2);  color: var(--accent3); }
+  .badge-red    { background: rgba(244,91,122,0.2);  color: var(--accent4); }
+
+  /* ── Cover ── */
+  .cover {
+    background: linear-gradient(135deg, rgba(124,106,247,0.15) 0%, rgba(56,217,169,0.08) 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px;
+    margin-bottom: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: 'PHP';
+    position: absolute;
+    right: -20px; top: -30px;
+    font-size: 10rem;
+    font-weight: 900;
+    color: rgba(124,106,247,0.06);
+    pointer-events: none;
+  }
+  .cover h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 10px; }
+  .cover h1 span { color: var(--accent); }
+  .cover p { color: var(--muted); font-size: 1rem; max-width: 500px; }
+  .cover .tags { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* diagram */
+  .diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin: 18px 0 24px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+  }
+  .box {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .box-purple { background: rgba(124,106,247,0.2); border: 1px solid var(--accent); color: var(--accent); }
+  .box-green  { background: rgba(56,217,169,0.2);  border: 1px solid var(--accent2); color: var(--accent2); }
+  .box-yellow { background: rgba(247,169,74,0.2);  border: 1px solid var(--accent3); color: var(--accent3); }
+  .arrow { color: var(--muted); font-size: 1.2rem; margin: 0 10px; }
+
+  @media (max-width: 900px) {
+    #sidebar { display: none; }
+    #content { margin-left: 0; padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav id="sidebar">
+  <div class="logo">
+    <h1>DWES · DAW2</h1>
+    <p>Apuntes PHP completos</p>
+  </div>
+  <nav>
+    <div class="section-label">Bloque 1 · OOP</div>
+    <a href="#oop-intro">¿Qué es la OOP?</a>
+    <a href="#clases">Clases y objetos</a>
+    <a href="#visibilidad">Visibilidad</a>
+    <a href="#herencia">Herencia</a>
+    <a href="#abstractas">Clases abstractas</a>
+    <a href="#interfaces">Interfaces</a>
+    <a href="#traits">Traits</a>
+    <a href="#namespaces">Namespaces</a>
+    <a href="#magicos">Métodos mágicos</a>
+    <div class="section-label">Bloque 2 · MVC</div>
+    <a href="#mvc-intro">¿Qué es MVC?</a>
+    <a href="#mvc-flujo">Flujo de una petición</a>
+    <a href="#mvc-modelo">El Modelo</a>
+    <a href="#mvc-controlador">El Controlador</a>
+    <a href="#mvc-vista">La Vista</a>
+    <a href="#mvc-sesiones">Sesiones y login</a>
+    <a href="#mvc-pdo">PDO en el Modelo</a>
+    <div class="section-label">Bloque 3 · APIs</div>
+    <a href="#api-intro">¿Qué es REST?</a>
+    <a href="#api-metodos">Métodos HTTP</a>
+    <a href="#api-codigos">Códigos HTTP</a>
+    <a href="#api-mvc">REST en MVC</a>
+    <a href="#api-basic">Autenticación Basic</a>
+    <a href="#api-endpoints">Endpoints completos</a>
+    <a href="#api-curl">Probar con curl</a>
+  </nav>
+</nav>
+
+<!-- ═══ CONTENT ═══ -->
+<main id="content">
+
+  <!-- COVER -->
+  <div class="cover">
+    <h1>PHP: <span>OOP · MVC · APIs</span></h1>
+    <p>Apuntes completos para entender y saber hacer. Con ejemplos reales del proyecto de la Clínica Veterinaria.</p>
+    <div class="tags">
+      <span class="badge badge-purple">DAW2 · DWES</span>
+      <span class="badge badge-green">IES Comercio · La Rioja</span>
+      <span class="badge badge-yellow">PHP 8</span>
+      <span class="badge badge-red">MVC + REST</span>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       BLOQUE 1: OOP
+  ══════════════════════════════════════════ -->
+
+  <div class="section" id="oop-intro">
+    <div class="section-header">
+      <div class="section-number n1">1</div>
+      <h2>Programación Orientada a Objetos (OOP)</h2>
+    </div>
+
+    <p>La OOP es una forma de organizar el código agrupando datos y funciones que trabajan juntas dentro de <strong>clases</strong>. En vez de tener funciones sueltas, creamos objetos que representan cosas del mundo real.</p>
+
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <div><strong>Analogía:</strong> Una <em>clase</em> es el molde. Un <em>objeto</em> es lo que fabricas con ese molde. Si la clase es <code>Coche</code>, un objeto sería <code>miCoche</code> (un Ford Rojo del 2020).</div>
+    </div>
+
+    <p>Las ventajas principales que usamos en clase son:</p>
+    <ul>
+      <li><strong>Reutilización:</strong> escribes la clase una vez y la usas en muchos sitios.</li>
+      <li><strong>Organización:</strong> cada clase tiene una responsabilidad clara (Modelo, Controlador, Vista...).</li>
+      <li><strong>Encapsulación:</strong> los datos internos están protegidos del exterior.</li>
+    </ul>
+  </div>
+
+  <!-- ── Clases y objetos ── -->
+  <div class="section" id="clases">
+    <div class="section-header">
+      <div class="section-number n1">1.1</div>
+      <h2>Clases y objetos</h2>
+    </div>
+
+    <p>Una clase se define con <code>class</code>. Tiene <strong>propiedades</strong> (variables) y <strong>métodos</strong> (funciones). El método especial <code>__construct()</code> se llama automáticamente al crear el objeto con <code>new</code>.</p>
+
+<pre><code><span class="cm">// Definimos la clase Mascota</span>
+<span class="kw">class</span> <span class="cl">Mascota</span> {
+
+    <span class="cm">// Propiedades (variables de la clase)</span>
+    <span class="kw">public</span> <span class="vr">$nombre</span>;
+    <span class="kw">public</span> <span class="vr">$tipo</span>;
+    <span class="kw">private</span> <span class="vr">$edad</span>;   <span class="cm">// privada: solo accesible desde dentro de la clase</span>
+
+    <span class="cm">// Constructor: se ejecuta al hacer "new Mascota(...)"</span>
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">string</span> <span class="vr">$nombre</span>, <span class="kw">string</span> <span class="vr">$tipo</span>, <span class="kw">int</span> <span class="vr">$edad</span>) {
+        <span class="vr">$this</span>-><span class="vr">nombre</span> = <span class="vr">$nombre</span>;   <span class="cm">// $this hace referencia al objeto actual</span>
+        <span class="vr">$this</span>-><span class="vr">tipo</span>   = <span class="vr">$tipo</span>;
+        <span class="vr">$this</span>-><span class="vr">edad</span>   = <span class="vr">$edad</span>;
+    }
+
+    <span class="cm">// Método público</span>
+    <span class="kw">public function</span> <span class="fn">presentarse</span>(): <span class="kw">string</span> {
+        <span class="kw">return</span> <span class="st">"Soy {$this->nombre}, un {$this->tipo} de {$this->edad} años."</span>;
+    }
+
+    <span class="cm">// Getter para la propiedad privada $edad</span>
+    <span class="kw">public function</span> <span class="fn">getEdad</span>(): <span class="kw">int</span> {
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="vr">edad</span>;
+    }
+}
+
+<span class="cm">// Crear un objeto (instanciar la clase)</span>
+<span class="vr">$mascota1</span> = <span class="kw">new</span> <span class="cl">Mascota</span>(<span class="st">'Rallito'</span>, <span class="st">'tortuga'</span>, <span class="nb">8</span>);
+<span class="vr">$mascota2</span> = <span class="kw">new</span> <span class="cl">Mascota</span>(<span class="st">'Carl'</span>, <span class="st">'gato'</span>, <span class="nb">10</span>);
+
+<span class="kw">echo</span> <span class="vr">$mascota1</span>-><span class="fn">presentarse</span>(); <span class="cm">// "Soy Rallito, un tortuga de 8 años."</span>
+<span class="kw">echo</span> <span class="vr">$mascota2</span>-><span class="vr">nombre</span>;          <span class="cm">// "Carl" (propiedad pública)</span>
+<span class="cm">// echo $mascota1->edad;  ← ERROR: propiedad privada</span>
+<label>PHP</label></code></pre>
+
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div><strong>Buena práctica:</strong> Las propiedades casi siempre deben ser <code>private</code> o <code>protected</code>. Se accede a ellas mediante métodos <em>getter</em> y <em>setter</em>. Esto es <strong>encapsulación</strong>.</div>
+    </div>
+  </div>
+
+  <!-- ── Visibilidad ── -->
+  <div class="section" id="visibilidad">
+    <div class="section-header">
+      <div class="section-number n1">1.2</div>
+      <h2>Visibilidad: public, protected, private</h2>
+    </div>
+
+    <p>Es uno de los conceptos más importantes del examen. Define desde dónde se puede acceder a una propiedad o método:</p>
+
+    <table>
+      <tr><th>Modificador</th><th>¿Desde dónde se puede acceder?</th><th>Cuándo usarlo</th></tr>
+      <tr><td><code>public</code></td><td>Desde cualquier sitio</td><td>Métodos que el exterior necesita llamar</td></tr>
+      <tr><td><code>protected</code></td><td>Desde la propia clase y sus hijas</td><td>Métodos/propiedades que heredarán las subclases</td></tr>
+      <tr><td><code>private</code></td><td>Solo desde la propia clase</td><td>Datos internos que nadie debe tocar directamente</td></tr>
+      <tr><td><code>final</code></td><td>No puede ser sobreescrito en hijas</td><td>Cuando un método NO debe modificarse</td></tr>
+      <tr><td><code>abstract</code></td><td>No puede usarse directamente, hay que heredar</td><td>Forzar a las clases hija a implementar el método</td></tr>
+    </table>
+
+<pre><code><span class="kw">class</span> <span class="cl">Animal</span> {
+    <span class="kw">public</span>    <span class="vr">$nombre</span>;     <span class="cm">// accesible desde cualquier lado</span>
+    <span class="kw">protected</span> <span class="vr">$raza</span>;       <span class="cm">// accesible desde Animal y sus hijas</span>
+    <span class="kw">private</span>   <span class="vr">$microchip</span>;  <span class="cm">// solo accesible dentro de Animal</span>
+}
+
+<span class="kw">class</span> <span class="cl">Perro</span> <span class="kw">extends</span> <span class="cl">Animal</span> {
+    <span class="kw">public function</span> <span class="fn">info</span>() {
+        <span class="kw">echo</span> <span class="vr">$this</span>-><span class="vr">nombre</span>;    <span class="cm">// ✅ public</span>
+        <span class="kw">echo</span> <span class="vr">$this</span>-><span class="vr">raza</span>;      <span class="cm">// ✅ protected (es clase hija)</span>
+        <span class="kw">echo</span> <span class="vr">$this</span>-><span class="vr">microchip</span>; <span class="cm">// ❌ ERROR: private de Animal</span>
+    }
+}
+<label>PHP</label></code></pre>
+  </div>
+
+  <!-- ── Herencia ── -->
+  <div class="section" id="herencia">
+    <div class="section-header">
+      <div class="section-number n1">1.3</div>
+      <h2>Herencia</h2>
+    </div>
+
+    <p>La herencia permite crear una clase nueva (<em>hija</em>) que reutiliza todo lo de otra clase (<em>padre/madre</em>). En PHP la herencia es <strong>simple</strong>: una clase solo puede heredar de UNA clase padre.</p>
+
+    <p>Se usa la palabra <code>extends</code>. Desde la clase hija puedes acceder a métodos del padre con <code>parent::</code>.</p>
+
+<pre><code><span class="cm">// Clase padre (base)</span>
+<span class="kw">class</span> <span class="cl">Controlador</span> {
+
+    <span class="cm">// Método que heredarán todos los controladores</span>
+    <span class="kw">public function</span> <span class="fn">modelo</span>(<span class="kw">string</span> <span class="vr">$nombre</span>) {
+        <span class="vr">$fqcn</span> = <span class="st">'Dwes\\Clinica\\'</span> . <span class="fn">ucfirst</span>(<span class="vr">$nombre</span>);
+        <span class="kw">return new</span> <span class="vr">$fqcn</span>();
+    }
+
+    <span class="kw">public function</span> <span class="fn">vista</span>(<span class="kw">string</span> <span class="vr">$vista</span>, <span class="kw">array</span> <span class="vr">$datos</span> = []) {
+        <span class="fn">extract</span>(<span class="vr">$datos</span>);  <span class="cm">// convierte el array en variables</span>
+        <span class="fn">require</span> <span class="st">RUTA_APP</span> . <span class="st">'/vistas/'</span> . <span class="vr">$vista</span> . <span class="st">'.php'</span>;
+    }
+}
+
+<span class="cm">// Clase hija: hereda modelo() y vista() automáticamente</span>
+<span class="kw">class</span> <span class="cl">Personas</span> <span class="kw">extends</span> <span class="cl">Controlador</span> {
+
+    <span class="kw">public function</span> <span class="fn">index</span>() {
+        <span class="cm">// Usamos modelo() que viene heredado de Controlador</span>
+        <span class="vr">$modeloPersona</span> = <span class="vr">$this</span>-><span class="fn">modelo</span>(<span class="st">'Persona'</span>);
+        <span class="vr">$personas</span> = <span class="vr">$modeloPersona</span>-><span class="fn">getPersonas</span>();
+
+        <span class="cm">// Usamos vista() que también viene heredada</span>
+        <span class="vr">$this</span>-><span class="fn">vista</span>(<span class="st">'personas/index'</span>, [<span class="st">'personas'</span> => <span class="vr">$personas</span>]);
+    }
+}
+
+<span class="cm">// También puedes sobreescribir (override) un método del padre</span>
+<span class="kw">class</span> <span class="cl">Mascotas</span> <span class="kw">extends</span> <span class="cl">Controlador</span> {
+
+    <span class="cm">// Sobreescribimos el método modelo() con comportamiento distinto</span>
+    <span class="kw">public function</span> <span class="fn">modelo</span>(<span class="kw">string</span> <span class="vr">$nombre</span>) {
+        <span class="kw">echo</span> <span class="st">"Cargando modelo: {$nombre}"</span>;
+        <span class="kw">return</span> <span class="kw">parent</span>::<span class="fn">modelo</span>(<span class="vr">$nombre</span>);  <span class="cm">// llamamos al padre</span>
+    }
+}
+<label>PHP</label></code></pre>
+
+    <div class="callout info">
+      <span class="callout-icon">🧠</span>
+      <div><strong>En nuestro proyecto:</strong> <code>Controlador</code> es la clase padre. <code>Paginas</code>, <code>Personas</code>, <code>Mascotas</code> y <code>Api</code> son las clases hijas que heredan de ella. De ahí el <code>class Personas extends Controlador</code>.</div>
+    </div>
+  </div>
+
+  <!-- ── Clases Abstractas ── -->
+  <div class="section" id="abstractas">
+    <div class="section-header">
+      <div class="section-number n1">1.4</div>
+      <h2>Clases Abstractas</h2>
+    </div>
+
+    <p>Una clase abstracta es una clase que <strong>no puedes instanciar directamente</strong> (no puedes hacer <code>new ClaseAbstracta()</code>). Sirve de molde base que obliga a las clases hijas a implementar ciertos métodos.</p>
+
+    <ul>
+      <li>Si una clase tiene al menos un método <code>abstract</code>, la clase entera debe ser <code>abstract</code>.</li>
+      <li>Los métodos abstractos solo declaran la firma (nombre y parámetros), sin cuerpo.</li>
+      <li>La clase hija <strong>está obligada</strong> a implementar todos los métodos abstractos del padre.</li>
+    </ul>
+
+<pre><code><span class="cm">// Clase abstracta: define el "contrato" que deben cumplir todas las formas</span>
+<span class="kw">abstract class</span> <span class="cl">Figura</span> {
+
+    <span class="cm">// Propiedad que sí puede tener (a diferencia de una interfaz)</span>
+    <span class="kw">protected</span> <span class="kw">string</span> <span class="vr">$color</span>;
+
+    <span class="cm">// Constructor normal con implementación</span>
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">string</span> <span class="vr">$color</span>) {
+        <span class="vr">$this</span>-><span class="vr">color</span> = <span class="vr">$color</span>;
+    }
+
+    <span class="cm">// Método con implementación (lo heredan las hijas directamente)</span>
+    <span class="kw">public function</span> <span class="fn">getColor</span>(): <span class="kw">string</span> {
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="vr">color</span>;
+    }
+
+    <span class="cm">// Método abstracto: sin cuerpo. La clase hija DEBE implementarlo.</span>
+    <span class="kw">abstract public function</span> <span class="fn">area</span>(): <span class="kw">float</span>;
+}
+
+<span class="cm">// Clase hija: OBLIGADA a implementar area()</span>
+<span class="kw">class</span> <span class="cl">Circulo</span> <span class="kw">extends</span> <span class="cl">Figura</span> {
+    <span class="kw">private float</span> <span class="vr">$radio</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">float</span> <span class="vr">$radio</span>, <span class="kw">string</span> <span class="vr">$color</span>) {
+        <span class="kw">parent</span>::<span class="fn">__construct</span>(<span class="vr">$color</span>);  <span class="cm">// llamamos al constructor del padre</span>
+        <span class="vr">$this</span>-><span class="vr">radio</span> = <span class="vr">$radio</span>;
+    }
+
+    <span class="cm">// Implementamos el método abstracto obligatorio</span>
+    <span class="kw">public function</span> <span class="fn">area</span>(): <span class="kw">float</span> {
+        <span class="kw">return</span> <span class="nb">M_PI</span> * <span class="vr">$this</span>-><span class="vr">radio</span> ** <span class="nb">2</span>;
+    }
+}
+
+<span class="cm">// $f = new Figura('rojo');  ← ❌ ERROR: no se puede instanciar una abstracta</span>
+<span class="vr">$c</span> = <span class="kw">new</span> <span class="cl">Circulo</span>(<span class="nb">5.0</span>, <span class="st">'azul'</span>);  <span class="cm">// ✅</span>
+<span class="kw">echo</span> <span class="vr">$c</span>-><span class="fn">area</span>();       <span class="cm">// 78.53...</span>
+<span class="kw">echo</span> <span class="vr">$c</span>-><span class="fn">getColor</span>();  <span class="cm">// "azul"</span>
+<label>PHP</label></code></pre>
+  </div>
+
+  <!-- ── Interfaces ── -->
+  <div class="section" id="interfaces">
+    <div class="section-header">
+      <div class="section-number n1">1.5</div>
+      <h2>Interfaces</h2>
+    </div>
+
+    <p>Una interfaz define un <strong>contrato</strong>: dice qué métodos debe tener una clase, pero no cómo los implementa. A diferencia de las clases abstractas:</p>
+
+    <table>
+      <tr><th>Característica</th><th>Interfaz</th><th>Clase Abstracta</th></tr>
+      <tr><td>Instanciar</td><td>❌ No</td><td>❌ No</td></tr>
+      <tr><td>Propiedades</td><td>❌ No puede tener</td><td>✅ Puede tener</td></tr>
+      <tr><td>Métodos con código</td><td>❌ Solo declaración</td><td>✅ Puede tener</td></tr>
+      <tr><td>Herencia múltiple</td><td>✅ Una clase puede implementar varias</td><td>❌ Solo una clase padre</td></tr>
+      <tr><td>Visibilidad métodos</td><td>Solo <code>public</code></td><td>Public o protected</td></tr>
+      <tr><td>Palabra clave</td><td><code>implements</code></td><td><code>extends</code></td></tr>
+    </table>
+
+<pre><code><span class="cm">// Definimos la interfaz</span>
+<span class="kw">interface</span> <span class="cl">Guardable</span> {
+    <span class="kw">public function</span> <span class="fn">guardar</span>(): <span class="kw">bool</span>;   <span class="cm">// sin cuerpo</span>
+    <span class="kw">public function</span> <span class="fn">eliminar</span>(): <span class="kw">bool</span>;
+}
+
+<span class="kw">interface</span> <span class="cl">Validable</span> {
+    <span class="kw">public function</span> <span class="fn">validar</span>(): <span class="kw">bool</span>;
+}
+
+<span class="cm">// Una clase puede implementar VARIAS interfaces (herencia múltiple)</span>
+<span class="kw">class</span> <span class="cl">Persona</span> <span class="kw">implements</span> <span class="cl">Guardable</span>, <span class="cl">Validable</span> {
+
+    <span class="kw">public function</span> <span class="fn">guardar</span>(): <span class="kw">bool</span> {
+        <span class="cm">// aquí la lógica real para guardar en BD</span>
+        <span class="kw">return true</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">eliminar</span>(): <span class="kw">bool</span> {
+        <span class="kw">return true</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">validar</span>(): <span class="kw">bool</span> {
+        <span class="kw">return</span> !<span class="fn">empty</span>(<span class="vr">$this</span>-><span class="vr">nombre</span>);
+    }
+}
+<label>PHP</label></code></pre>
+  </div>
+
+  <!-- ── Traits ── -->
+  <div class="section" id="traits">
+    <div class="section-header">
+      <div class="section-number n1">1.6</div>
+      <h2>Traits</h2>
+    </div>
+
+    <p>Los traits son un mecanismo de <strong>reutilización de código</strong> que suple la falta de herencia múltiple en PHP. Un trait agrupa métodos que puedes "pegar" en varias clases independientes.</p>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div>Un trait NO se puede instanciar directamente (<code>new MiTrait()</code> da error). Solo sirve para incluirlo en una clase con <code>use</code>.</div>
+    </div>
+
+<pre><code><span class="cm">// Trait: bloque de métodos reutilizables</span>
+<span class="kw">trait</span> <span class="cl">Registrable</span> {
+    <span class="kw">public function</span> <span class="fn">log</span>(<span class="kw">string</span> <span class="vr">$mensaje</span>): <span class="kw">void</span> {
+        <span class="fn">file_put_contents</span>(<span class="st">'log.txt'</span>, <span class="fn">date</span>(<span class="st">'Y-m-d H:i:s'</span>) . <span class="st">' - '</span> . <span class="vr">$mensaje</span> . <span class="st">"\n"</span>, <span class="nb">FILE_APPEND</span>);
+    }
+}
+
+<span class="kw">trait</span> <span class="cl">Timestamps</span> {
+    <span class="kw">public function</span> <span class="fn">ahora</span>(): <span class="kw">string</span> {
+        <span class="kw">return</span> <span class="fn">date</span>(<span class="st">'d/m/Y H:i:s'</span>);
+    }
+}
+
+<span class="cm">// Usamos DOS traits en una sola clase</span>
+<span class="kw">class</span> <span class="cl">Veterinario</span> {
+    <span class="kw">use</span> <span class="cl">Registrable</span>, <span class="cl">Timestamps</span>;  <span class="cm">// incluimos los dos traits</span>
+
+    <span class="kw">public function</span> <span class="fn">atender</span>(<span class="kw">string</span> <span class="vr">$paciente</span>): <span class="kw">void</span> {
+        <span class="vr">$this</span>-><span class="fn">log</span>(<span class="st">"Atendiendo a {$paciente} a las "</span> . <span class="vr">$this</span>-><span class="fn">ahora</span>());
+    }
+}
+
+<span class="vr">$vet</span> = <span class="kw">new</span> <span class="cl">Veterinario</span>();
+<span class="vr">$vet</span>-><span class="fn">atender</span>(<span class="st">'Rallito'</span>);  <span class="cm">// Escribe en log.txt</span>
+<label>PHP</label></code></pre>
+  </div>
+
+  <!-- ── Namespaces ── -->
+  <div class="section" id="namespaces">
+    <div class="section-header">
+      <div class="section-number n1">1.7</div>
+      <h2>Namespaces (Espacios de nombres)</h2>
+    </div>
+
+    <p>Los namespaces sirven para <strong>organizar el código</strong> y evitar colisiones de nombres. Imagina que dos librerías distintas tienen una clase llamada <code>Database</code>. Con namespaces, una puede ser <code>MiApp\Database</code> y otra <code>OtraLib\Database</code>.</p>
+
+    <p>En nuestro proyecto usamos el namespace <code>Dwes\Clinica</code> definido en <code>composer.json</code>.</p>
+
+<pre><code><span class="cm">// Al inicio de CADA archivo PHP, declaramos su namespace</span>
+<span class="kw">namespace</span> <span class="cl">Dwes\Clinica</span>;
+
+<span class="cm">// Para usar clases de otro namespace, usamos "use"</span>
+<span class="kw">use</span> <span class="cl">Dwes\Clinica\Controlador</span>;
+<span class="kw">use</span> <span class="cl">PDO</span>;  <span class="cm">// PDO está en el namespace global</span>
+
+<span class="kw">class</span> <span class="cl">Personas</span> <span class="kw">extends</span> <span class="cl">Controlador</span> {
+    <span class="cm">// ...</span>
+}
+<label>PHP</label></code></pre>
+
+    <p>En <code>composer.json</code> le decimos a Composer dónde buscar las clases de nuestro namespace:</p>
+
+<pre><code>{
+  <span class="st">"autoload"</span>: {
+    <span class="st">"psr-4"</span>: {
+      <span class="st">"Dwes\\Clinica\\"</span>: [
+        <span class="st">"app/librerias"</span>,
+        <span class="st">"app/controladores"</span>,
+        <span class="st">"app/modelos"</span>
+      ]
+    }
+  }
+}
+<label>JSON</label></code></pre>
+
+    <div class="callout info">
+      <span class="callout-icon">🔄</span>
+      <div>Después de modificar <code>composer.json</code>, hay que ejecutar <code>composer dump-autoload</code> en la terminal para que regenere el autoloader.</div>
+    </div>
+  </div>
+
+  <!-- ── Métodos Mágicos ── -->
+  <div class="section" id="magicos">
+    <div class="section-header">
+      <div class="section-number n1">1.8</div>
+      <h2>Métodos Mágicos</h2>
+    </div>
+
+    <p>Son métodos especiales que PHP llama automáticamente en ciertas situaciones. Empiezan siempre con <code>__</code>.</p>
+
+    <table>
+      <tr><th>Método</th><th>¿Cuándo se llama?</th><th>Uso típico</th></tr>
+      <tr><td><code>__construct()</code></td><td>Al hacer <code>new Clase()</code></td><td>Inicializar propiedades</td></tr>
+      <tr><td><code>__destruct()</code></td><td>Cuando el objeto deja de usarse</td><td>Cerrar conexiones, liberar recursos</td></tr>
+      <tr><td><code>__toString()</code></td><td>Al usar el objeto como string (<code>echo $obj</code>)</td><td>Representación textual del objeto</td></tr>
+      <tr><td><code>__get($name)</code></td><td>Al intentar leer propiedad inaccesible</td><td>Acceso dinámico a propiedades</td></tr>
+      <tr><td><code>__set($name, $val)</code></td><td>Al intentar escribir propiedad inaccesible</td><td>Setters dinámicos</td></tr>
+    </table>
+
+<pre><code><span class="kw">class</span> <span class="cl">Mascota</span> {
+    <span class="kw">private array</span> <span class="vr">$datos</span> = [];
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="kw">string</span> <span class="vr">$nombre</span>) {
+        <span class="vr">$this</span>-><span class="vr">datos</span>[<span class="st">'nombre'</span>] = <span class="vr">$nombre</span>;
+    }
+
+    <span class="cm">// Se llama cuando hacemos "echo $mascota"</span>
+    <span class="kw">public function</span> <span class="fn">__toString</span>(): <span class="kw">string</span> {
+        <span class="kw">return</span> <span class="st">"Mascota: {$this->datos['nombre']}"</span>;
+    }
+}
+
+<span class="vr">$m</span> = <span class="kw">new</span> <span class="cl">Mascota</span>(<span class="st">'Carl'</span>);
+<span class="kw">echo</span> <span class="vr">$m</span>;  <span class="cm">// Mascota: Carl  (llama a __toString automáticamente)</span>
+<label>PHP</label></code></pre>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       BLOQUE 2: MVC
+  ══════════════════════════════════════════ -->
+
+  <div class="section" id="mvc-intro">
+    <div class="section-header">
+      <div class="section-number n2">2</div>
+      <h2>Patrón Modelo Vista Controlador (MVC)</h2>
+    </div>
+
+    <p>MVC es un patrón de diseño que divide la aplicación en tres capas con responsabilidades distintas. El objetivo es <strong>separar la lógica de negocio de la presentación</strong>.</p>
+
+    <div class="diagram">
+      <div>
+        <span class="box box-yellow">NAVEGADOR</span>
+        <span class="arrow">→ petición →</span>
+        <span class="box box-purple">CONTROLADOR</span>
+      </div>
+      <div style="margin: 8px 0; color: var(--muted); font-size: 0.9rem;">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↕ pide datos ↕
+      </div>
+      <div>
+        <span class="box box-green">VISTA (HTML)</span>
+        <span class="arrow">← respuesta ←</span>
+        <span class="box box-purple">CONTROLADOR</span>
+        <span class="arrow">↔</span>
+        <span class="box box-green">MODELO (BD)</span>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>Capa</th><th>Archivo</th><th>Responsabilidad</th></tr>
+      <tr><td><strong>Modelo</strong></td><td><code>app/modelos/Persona.php</code></td><td>Accede a la BD. Contiene las consultas SQL.</td></tr>
+      <tr><td><strong>Vista</strong></td><td><code>app/vistas/personas/index.php</code></td><td>Solo muestra datos. HTML + PHP mínimo.</td></tr>
+      <tr><td><strong>Controlador</strong></td><td><code>app/controladores/Personas.php</code></td><td>Coordina modelo y vista. Lógica de negocio.</td></tr>
+    </table>
+  </div>
+
+  <!-- ── Flujo de una petición ── -->
+  <div class="section" id="mvc-flujo">
+    <div class="section-header">
+      <div class="section-number n2">2.1</div>
+      <h2>Flujo completo de una petición</h2>
+    </div>
+
+    <p>Cuando el usuario escribe <code>http://localhost/mvcrecuperacion/public/personas/index</code>, esto es lo que ocurre paso a paso:</p>
+
+    <ol>
+      <li>El servidor web recibe la petición y el <code>.htaccess</code> la redirige a <code>public/index.php</code>.</li>
+      <li><code>index.php</code> carga el autoloader de Composer y crea una instancia de <code>Core</code>.</li>
+      <li><code>Core</code> analiza la URL: <code>personas</code> → controlador, <code>index</code> → método.</li>
+      <li><code>Core</code> instancia <code>Personas</code> y llama a <code>Personas::index()</code>.</li>
+      <li><code>index()</code> usa el modelo <code>Persona</code> para obtener los datos de la BD.</li>
+      <li><code>index()</code> llama a la vista <code>personas/index.php</code> pasándole los datos.</li>
+      <li>La vista genera el HTML y lo envía al navegador.</li>
+    </ol>
+
+<pre><code><span class="cm">// ① public/index.php – Punto de entrada único</span>
+<span class="fn">require_once</span> <span class="fn">__DIR__</span> . <span class="st">'/../vendor/autoload.php'</span>;
+<span class="fn">require_once</span> <span class="fn">__DIR__</span> . <span class="st">'/../app/config/config.php'</span>;
+
+<span class="kw">use</span> <span class="cl">Dwes\Clinica\Core</span>;
+<span class="vr">$iniciar</span> = <span class="kw">new</span> <span class="cl">Core</span>();  <span class="cm">// Core lee la URL y enruta</span>
+<label>PHP</label></code></pre>
+
+<pre><code><span class="cm">// ② app/librerias/Core.php – El enrutador</span>
+<span class="cm">// URL: /personas/index  →  controlador=Personas, método=index</span>
+<span class="cm">// URL: /personas/ficha/3  →  controlador=Personas, método=ficha, param=3</span>
+
+<span class="vr">$url</span> = <span class="fn">explode</span>(<span class="st">'/'</span>, <span class="vr">$_GET</span>[<span class="st">'url'</span>]); <span class="cm">// ['personas', 'index']</span>
+<span class="vr">$controlador</span> = <span class="fn">ucfirst</span>(<span class="vr">$url</span>[<span class="nb">0</span>]);    <span class="cm">// 'Personas'</span>
+<span class="vr">$metodo</span>      = <span class="vr">$url</span>[<span class="nb">1</span>] ?? <span class="st">'index'</span>;   <span class="cm">// 'index'</span>
+<span class="vr">$parametro</span>   = <span class="vr">$url</span>[<span class="nb">2</span>] ?? <span class="nb">null</span>;      <span class="cm">// 3 (o null si no hay)</span>
+
+<span class="vr">$obj</span> = <span class="kw">new</span> <span class="vr">$controlador</span>();
+<span class="fn">call_user_func_array</span>([<span class="vr">$obj</span>, <span class="vr">$metodo</span>], [<span class="vr">$parametro</span>]);
+<label>PHP</label></code></pre>
+  </div>
+
+  <!-- ── El Modelo ── -->
+  <div class="section" id="mvc-modelo">
+    <div class="section-header">
+      <div class="section-number n2">2.2</div>
+      <h2>El Modelo</h2>
+    </div>
+
+    <p>El modelo es la capa que <strong>habla con la base de datos</strong>. Contiene solo consultas SQL. No sabe nada de HTML ni de la lógica de la aplicación. Usa la clase <code>Db</code> del framework para hacer consultas preparadas con PDO.</p>
+
+<pre><code><span class="kw">namespace</span> <span class="cl">Dwes\Clinica</span>;
+
+<span class="kw">class</span> <span class="cl">Persona</span> <span class="kw">extends</span> <span class="cl">Controlador</span> {
+
+    <span class="kw">private</span> <span class="cl">Db</span> <span class="vr">$db</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>() {
+        <span class="vr">$this</span>-><span class="vr">db</span> = <span class="kw">new</span> <span class="cl">Db</span>();  <span class="cm">// clase del framework que envuelve PDO</span>
+    }
+
+    <span class="cm">// ── SELECT todos ──</span>
+    <span class="kw">public function</span> <span class="fn">getPersonas</span>(): <span class="kw">array</span> {
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">query</span>(<span class="st">'SELECT * FROM personas ORDER BY nombre'</span>);
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">registros</span>(); <span class="cm">// array de objetos stdClass</span>
+    }
+
+    <span class="cm">// ── SELECT uno por id ──</span>
+    <span class="kw">public function</span> <span class="fn">getPersonaPorId</span>(<span class="kw">int</span> <span class="vr">$id</span>): ?<span class="kw">object</span> {
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">query</span>(<span class="st">'SELECT * FROM personas WHERE id = :id'</span>);
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">bind</span>(<span class="st">':id'</span>, <span class="vr">$id</span>);  <span class="cm">// bind evita inyección SQL</span>
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">registro</span>(); <span class="cm">// un objeto o null</span>
+    }
+
+    <span class="cm">// ── INSERT ──</span>
+    <span class="kw">public function</span> <span class="fn">insertarPersona</span>(<span class="kw">string</span> <span class="vr">$nombre</span>, <span class="kw">string</span> <span class="vr">$apellidos</span>,
+                                     <span class="kw">string</span> <span class="vr">$telefono</span>, <span class="kw">string</span> <span class="vr">$email</span>): <span class="kw">bool</span> {
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">query</span>(
+            <span class="st">'INSERT INTO personas (nombre, apellidos, telefono, email)
+             VALUES (:nombre, :apellidos, :telefono, :email)'</span>
+        );
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">bind</span>(<span class="st">':nombre'</span>,    <span class="vr">$nombre</span>);
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">bind</span>(<span class="st">':apellidos'</span>, <span class="vr">$apellidos</span>);
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">bind</span>(<span class="st">':telefono'</span>,  <span class="vr">$telefono</span>);
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">bind</span>(<span class="st">':email'</span>,     <span class="vr">$email</span>);
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">execute</span>();
+    }
+
+    <span class="cm">// ── DELETE ──</span>
+    <span class="kw">public function</span> <span class="fn">eliminarPersona</span>(<span class="kw">int</span> <span class="vr">$id</span>): <span class="kw">bool</span> {
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">query</span>(<span class="st">'DELETE FROM personas WHERE id = :id'</span>);
+        <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">bind</span>(<span class="st">':id'</span>, <span class="vr">$id</span>);
+        <span class="kw">return</span> <span class="vr">$this</span>-><span class="vr">db</span>-><span class="fn">execute</span>();
+    }
+}
+<label>PHP — app/modelos/Persona.php</label></code></pre>
+
+    <div class="callout danger">
+      <span class="callout-icon">🚨</span>
+      <div><strong>NUNCA hagas esto:</strong> <code>query("SELECT * FROM personas WHERE id = $id")</code>. Las variables directas en SQL permiten <strong>inyección SQL</strong>. Siempre usa instrucciones preparadas con <code>bind()</code>.</div>
+    </div>
+  </div>
+
+  <!-- ── El Controlador ── -->
+  <div class="section" id="mvc-controlador">
+    <div class="section-header">
+      <div class="section-number n2">2.3</div>
+      <h2>El Controlador</h2>
+    </div>
+
+    <p>El controlador es el <strong>cerebro</strong> de la aplicación. Recibe la petición del usuario, llama al modelo si necesita datos, valida los formularios y envía los datos a la vista.</p>
+
+<pre><code><span class="kw">namespace</span> <span class="cl">Dwes\Clinica</span>;
+<span class="kw">use</span> <span class="cl">Dwes\Clinica\Controlador</span>;
+
+<span class="kw">class</span> <span class="cl">Personas</span> <span class="kw">extends</span> <span class="cl">Controlador</span> {
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>() {
+        <span class="cm">// Seguridad: si no hay sesión, al login</span>
+        <span class="kw">if</span> (<span class="fn">session_status</span>() === <span class="nb">PHP_SESSION_NONE</span>) <span class="fn">session_start</span>();
+        <span class="kw">if</span> (!<span class="fn">isset</span>(<span class="vr">$_SESSION</span>[<span class="st">'veterinario_id'</span>])) {
+            <span class="fn">header</span>(<span class="st">'Location: '</span> . <span class="nb">RUTA_URL</span> . <span class="st">'/paginas/login'</span>);
+            <span class="fn">exit</span>();
+        }
+    }
+
+    <span class="cm">// GET  /personas/index  → listado</span>
+    <span class="kw">public function</span> <span class="fn">index</span>(): <span class="kw">void</span> {
+        <span class="vr">$modeloPersona</span> = <span class="vr">$this</span>-><span class="fn">modelo</span>(<span class="st">'Persona'</span>);  <span class="cm">// instancia Persona</span>
+        <span class="vr">$personas</span> = <span class="vr">$modeloPersona</span>-><span class="fn">getPersonas</span>();
+
+        <span class="vr">$this</span>-><span class="fn">vista</span>(<span class="st">'personas/index'</span>, [
+            <span class="st">'titulo'</span>   => <span class="st">'Listado de Dueños'</span>,
+            <span class="st">'personas'</span> => <span class="vr">$personas</span>,  <span class="cm">// se convierte en $personas en la vista</span>
+        ]);
+    }
+
+    <span class="cm">// GET + POST  /personas/nueva  → alta</span>
+    <span class="kw">public function</span> <span class="fn">nueva</span>(): <span class="kw">void</span> {
+        <span class="vr">$error</span> = <span class="st">''</span>;
+        <span class="vr">$ok</span>    = <span class="st">''</span>;
+
+        <span class="kw">if</span> (<span class="vr">$_SERVER</span>[<span class="st">'REQUEST_METHOD'</span>] === <span class="st">'POST'</span>) {
+
+            <span class="cm">// 1ª capa: trim() limpia espacios</span>
+            <span class="vr">$nombre</span>    = <span class="fn">trim</span>(<span class="vr">$_POST</span>[<span class="st">'nombre'</span>]    ?? <span class="st">''</span>);
+            <span class="vr">$apellidos</span> = <span class="fn">trim</span>(<span class="vr">$_POST</span>[<span class="st">'apellidos'</span>] ?? <span class="st">''</span>);
+            <span class="vr">$email</span>     = <span class="fn">trim</span>(<span class="vr">$_POST</span>[<span class="st">'email'</span>]     ?? <span class="st">''</span>);
+            <span class="vr">$telefono</span>  = <span class="fn">trim</span>(<span class="vr">$_POST</span>[<span class="st">'telefono'</span>]  ?? <span class="st">''</span>);
+
+            <span class="cm">// 2ª capa: validación PHP</span>
+            <span class="kw">if</span> (<span class="fn">empty</span>(<span class="vr">$nombre</span>) || <span class="fn">empty</span>(<span class="vr">$apellidos</span>)) {
+                <span class="vr">$error</span> = <span class="st">'Nombre y apellidos son obligatorios.'</span>;
+
+            } <span class="kw">elseif</span> (!<span class="fn">empty</span>(<span class="vr">$email</span>) && !<span class="fn">filter_var</span>(<span class="vr">$email</span>, <span class="nb">FILTER_VALIDATE_EMAIL</span>)) {
+                <span class="vr">$error</span> = <span class="st">'Email no válido.'</span>;  <span class="cm">// filter_var valida formatos</span>
+
+            } <span class="kw">elseif</span> (!<span class="fn">empty</span>(<span class="vr">$telefono</span>) && !<span class="fn">preg_match</span>(<span class="st">'/^[0-9]{9}$/'</span>, <span class="vr">$telefono</span>)) {
+                <span class="vr">$error</span> = <span class="st">'Teléfono: 9 dígitos.'</span>;  <span class="cm">// preg_match usa regex</span>
+
+            } <span class="kw">else</span> {
+                <span class="vr">$modeloPersona</span> = <span class="vr">$this</span>-><span class="fn">modelo</span>(<span class="st">'Persona'</span>);
+                <span class="kw">if</span> (<span class="vr">$modeloPersona</span>-><span class="fn">insertarPersona</span>(<span class="vr">$nombre</span>, <span class="vr">$apellidos</span>, <span class="vr">$telefono</span>, <span class="vr">$email</span>)) {
+                    <span class="vr">$ok</span> = <span class="st">'Persona registrada correctamente.'</span>;
+                } <span class="kw">else</span> {
+                    <span class="vr">$error</span> = <span class="st">'Error al guardar.'</span>;
+                }
+            }
+        }
+
+        <span class="vr">$this</span>-><span class="fn">vista</span>(<span class="st">'personas/nueva'</span>, [<span class="st">'titulo'</span> => <span class="st">'Nueva Persona'</span>,
+                                       <span class="st">'error'</span>  => <span class="vr">$error</span>, <span class="st">'ok'</span> => <span class="vr">$ok</span>]);
+    }
+}
+<label>PHP — app/controladores/Personas.php</label></code></pre>
+  </div>
+
+  <!-- ── La Vista ── -->
+  <div class="section" id="mvc-vista">
+    <div class="section-header">
+      <div class="section-number n2">2.4</div>
+      <h2>La Vista</h2>
+    </div>
+
+    <p>La vista es el HTML que ve el usuario. Recibe variables del controlador mediante <code>extract($datos)</code> y las muestra. <strong>Regla de oro:</strong> en la vista no debe haber lógica de negocio ni consultas a la BD.</p>
+
+    <div class="callout warn">
+      <span class="callout-icon">🛡️</span>
+      <div>Siempre usa <code>htmlspecialchars()</code> para mostrar datos que vienen del usuario o de la BD. Esto evita ataques XSS (inyección de código HTML/JS malicioso).</div>
+    </div>
+
+<pre><code><span class="cm">&lt;?php require_once RUTA_APP . '/vistas/inc/header.php'; ?&gt;</span>
+
+<span class="kw">&lt;h1&gt;</span>&lt;?= <span class="fn">htmlspecialchars</span>(<span class="vr">$titulo</span>) ?&gt;<span class="kw">&lt;/h1&gt;</span>
+
+<span class="kw">&lt;table&gt;</span>
+    <span class="kw">&lt;tr&gt;&lt;th&gt;</span>Nombre<span class="kw">&lt;/th&gt;&lt;th&gt;</span>Acciones<span class="kw">&lt;/th&gt;&lt;/tr&gt;</span>
+
+    <span class="cm">&lt;?php foreach ($personas as $persona): ?&gt;</span>
+    <span class="cm">    &lt;!-- $personas es el array de objetos que pasó el controlador --&gt;</span>
+        <span class="kw">&lt;tr&gt;</span>
+            <span class="kw">&lt;td&gt;</span>&lt;?= <span class="fn">htmlspecialchars</span>(<span class="vr">$persona</span>-><span class="vr">nombre</span>) ?&gt;<span class="kw">&lt;/td&gt;</span>
+            <span class="kw">&lt;td&gt;</span>
+                <span class="cm">&lt;!-- El id va en la URL como parámetro --&gt;</span>
+                &lt;a href=<span class="st">"&lt;?= RUTA_URL ?&gt;/personas/ficha/&lt;?= $persona-&gt;id ?&gt;"</span>&gt;Ver ficha&lt;/a&gt;
+                &lt;a href=<span class="st">"&lt;?= RUTA_URL ?&gt;/personas/eliminar/&lt;?= $persona-&gt;id ?&gt;"</span>
+                   onclick=<span class="st">"return confirm('¿Eliminar?')"</span>&gt;Eliminar&lt;/a&gt;
+            <span class="kw">&lt;/td&gt;</span>
+        <span class="kw">&lt;/tr&gt;</span>
+    <span class="cm">&lt;?php endforeach; ?&gt;</span>
+<span class="kw">&lt;/table&gt;</span>
+
+<span class="cm">&lt;?php require_once RUTA_APP . '/vistas/inc/footer.php'; ?&gt;</span>
+<label>PHP — app/vistas/personas/index.php</label></code></pre>
+  </div>
+
+  <!-- ── Sesiones y Login ── -->
+  <div class="section" id="mvc-sesiones">
+    <div class="section-header">
+      <div class="section-number n2">2.5</div>
+      <h2>Sesiones y Login</h2>
+    </div>
+
+    <p>HTTP es un protocolo sin estado: cada petición es independiente. Las <strong>sesiones</strong> permiten "recordar" al usuario entre peticiones guardando datos en el servidor.</p>
+
+    <table>
+      <tr><th>Función</th><th>¿Para qué sirve?</th></tr>
+      <tr><td><code>session_start()</code></td><td>Inicia o reanuda la sesión. Se llama antes de usar <code>$_SESSION</code></td></tr>
+      <tr><td><code>session_status()</code></td><td>Devuelve el estado actual (PHP_SESSION_NONE, PHP_SESSION_ACTIVE...)</td></tr>
+      <tr><td><code>session_unset()</code></td><td>Limpia todas las variables de sesión</td></tr>
+      <tr><td><code>session_destroy()</code></td><td>Destruye la sesión por completo</td></tr>
+    </table>
+
+<pre><code><span class="cm">// Controlador Paginas – Login, logout, logged()</span>
+<span class="kw">class</span> <span class="cl">Paginas</span> <span class="kw">extends</span> <span class="cl">Controlador</span> {
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>() {
+        <span class="kw">if</span> (<span class="fn">session_status</span>() === <span class="nb">PHP_SESSION_NONE</span>) <span class="fn">session_start</span>();
+    }
+
+    <span class="cm">// Se llama al principio de métodos que requieren estar logueado</span>
+    <span class="kw">public function</span> <span class="fn">logged</span>(): <span class="kw">void</span> {
+        <span class="kw">if</span> (!<span class="fn">isset</span>(<span class="vr">$_SESSION</span>[<span class="st">'veterinario_id'</span>])) {
+            <span class="fn">header</span>(<span class="st">'Location: '</span> . <span class="nb">RUTA_URL</span> . <span class="st">'/paginas/login'</span>);
+            <span class="fn">exit</span>(); <span class="cm">// IMPORTANTE: detiene la ejecución</span>
+        }
+    }
+
+    <span class="cm">// Procesa el formulario de login</span>
+    <span class="kw">public function</span> <span class="fn">login</span>(): <span class="kw">void</span> {
+        <span class="kw">if</span> (<span class="vr">$_SERVER</span>[<span class="st">'REQUEST_METHOD'</span>] === <span class="st">'POST'</span>) {
+
+            <span class="vr">$email</span> = <span class="fn">trim</span>(<span class="vr">$_POST</span>[<span class="st">'email'</span>] ?? <span class="st">''</span>);
+            <span class="vr">$clave</span> = <span class="fn">trim</span>(<span class="vr">$_POST</span>[<span class="st">'clave'</span>] ?? <span class="st">''</span>);
+
+            <span class="vr">$modeloVet</span>   = <span class="vr">$this</span>-><span class="fn">modelo</span>(<span class="st">'Veterinario'</span>);
+            <span class="vr">$veterinario</span> = <span class="vr">$modeloVet</span>-><span class="fn">login</span>(<span class="vr">$email</span>, <span class="vr">$clave</span>);  <span class="cm">// busca en BD</span>
+
+            <span class="kw">if</span> (<span class="vr">$veterinario</span>) {
+                <span class="cm">// ✅ Credenciales correctas: guardar en sesión</span>
+                <span class="vr">$_SESSION</span>[<span class="st">'veterinario_id'</span>]     = <span class="vr">$veterinario</span>-><span class="vr">id</span>;
+                <span class="vr">$_SESSION</span>[<span class="st">'veterinario_nombre'</span>] = <span class="vr">$veterinario</span>-><span class="vr">nombre</span>;
+
+                <span class="fn">header</span>(<span class="st">'Location: '</span> . <span class="nb">RUTA_URL</span> . <span class="st">'/paginas/index'</span>);
+                <span class="fn">exit</span>();
+            }
+            <span class="cm">// ❌ Credenciales incorrectas: se muestra error en la vista</span>
+        }
+        <span class="vr">$this</span>-><span class="fn">vista</span>(<span class="st">'paginas/login'</span>, [<span class="st">'error'</span> => <span class="st">'Email o clave incorrectos'</span>]);
+    }
+
+    <span class="cm">// Cierra la sesión</span>
+    <span class="kw">public function</span> <span class="fn">logout</span>(): <span class="kw">void</span> {
+        <span class="fn">session_unset</span>();   <span class="cm">// elimina variables</span>
+        <span class="fn">session_destroy</span>(); <span class="cm">// destruye la sesión</span>
+        <span class="fn">header</span>(<span class="st">'Location: '</span> . <span class="nb">RUTA_URL</span> . <span class="st">'/paginas/login'</span>);
+        <span class="fn">exit</span>();
+    }
+}
+<label>PHP — app/controladores/Paginas.php</label></code></pre>
+  </div>
+
+  <!-- ── Subida de ficheros ── -->
+  <div class="section" id="mvc-pdo">
+    <div class="section-header">
+      <div class="section-number n2">2.6</div>
+      <h2>Subida de archivos e imágenes</h2>
+    </div>
+
+    <p>Para subir archivos, el formulario HTML necesita <strong>obligatoriamente</strong> <code>enctype="multipart/form-data"</code>. Los datos del archivo llegan a PHP en <code>$_FILES</code>.</p>
+
+<pre><code><span class="cm">&lt;!-- En la vista: enctype es OBLIGATORIO para subir archivos --&gt;</span>
+&lt;form method=<span class="st">"POST"</span> action=<span class="st">"..."</span> enctype=<span class="st">"multipart/form-data"</span>&gt;
+    &lt;input type=<span class="st">"file"</span> name=<span class="st">"foto"</span> accept=<span class="st">"image/*"</span>&gt;
+    &lt;button type=<span class="st">"submit"</span>&gt;Guardar&lt;/button&gt;
+&lt;/form&gt;
+<label>HTML</label></code></pre>
+
+<pre><code><span class="cm">// En el controlador: procesamos la imagen</span>
+<span class="kw">if</span> (<span class="fn">isset</span>(<span class="vr">$_FILES</span>[<span class="st">'foto'</span>]) && <span class="vr">$_FILES</span>[<span class="st">'foto'</span>][<span class="st">'error'</span>] === <span class="nb">UPLOAD_ERR_OK</span>) {
+
+    <span class="vr">$archivo</span>   = <span class="vr">$_FILES</span>[<span class="st">'foto'</span>];
+    <span class="vr">$extension</span> = <span class="fn">strtolower</span>(<span class="fn">pathinfo</span>(<span class="vr">$archivo</span>[<span class="st">'name'</span>], <span class="nb">PATHINFO_EXTENSION</span>));
+
+    <span class="cm">// Validaciones de seguridad</span>
+    <span class="kw">if</span> (!<span class="fn">in_array</span>(<span class="vr">$extension</span>, [<span class="st">'jpg'</span>, <span class="st">'jpeg'</span>, <span class="st">'png'</span>, <span class="st">'gif'</span>])) {
+        <span class="vr">$error</span> = <span class="st">'Solo se permiten JPG, PNG o GIF.'</span>;
+
+    } <span class="kw">elseif</span> (<span class="vr">$archivo</span>[<span class="st">'size'</span>] > <span class="nb">2</span> * <span class="nb">1024</span> * <span class="nb">1024</span>) {  <span class="cm">// 2 MB</span>
+        <span class="vr">$error</span> = <span class="st">'Máximo 2 MB.'</span>;
+
+    } <span class="kw">else</span> {
+        <span class="cm">// uniqid() genera nombre único para no sobreescribir archivos</span>
+        <span class="vr">$nombreArchivo</span> = <span class="fn">uniqid</span>(<span class="st">'mascota_'</span>) . <span class="st">'.'</span> . <span class="vr">$extension</span>;
+        <span class="vr">$rutaDestino</span>   = <span class="fn">__DIR__</span> . <span class="st">'/../../public/img/'</span> . <span class="vr">$nombreArchivo</span>;
+
+        <span class="kw">if</span> (<span class="fn">move_uploaded_file</span>(<span class="vr">$archivo</span>[<span class="st">'tmp_name'</span>], <span class="vr">$rutaDestino</span>)) {
+            <span class="vr">$foto_url</span> = <span class="st">'/public/img/'</span> . <span class="vr">$nombreArchivo</span>;
+        }
+    }
+}
+<label>PHP — app/controladores/Mascotas.php</label></code></pre>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       BLOQUE 3: APIS
+  ══════════════════════════════════════════ -->
+
+  <div class="section" id="api-intro">
+    <div class="section-header">
+      <div class="section-number n3">3</div>
+      <h2>Servicios Web y APIs REST</h2>
+    </div>
+
+    <p>Una <strong>API REST</strong> es una interfaz que permite a distintas aplicaciones comunicarse entre sí a través de HTTP. En vez de devolver HTML, devuelve datos en formato <strong>JSON</strong>.</p>
+
+    <div class="callout info">
+      <span class="callout-icon">📱</span>
+      <div><strong>Ejemplo real:</strong> Cuando la app de Instagram carga tus fotos, hace una petición a una API REST que le devuelve JSON con la lista de fotos. La app móvil luego muestra ese JSON como le conviene.</div>
+    </div>
+
+    <p>Principios fundamentales de REST que debes conocer:</p>
+    <ul>
+      <li><strong>Orientación a recursos:</strong> todo es un recurso con su URL (persona, mascota, pedido...).</li>
+      <li><strong>Métodos HTTP:</strong> GET (leer), POST (crear), PUT (modificar todo), PATCH (modificar parte), DELETE (borrar).</li>
+      <li><strong>Stateless:</strong> cada petición es independiente, sin sesiones del servidor.</li>
+      <li><strong>JSON:</strong> el formato estándar de respuesta.</li>
+    </ul>
+  </div>
+
+  <!-- ── Métodos HTTP ── -->
+  <div class="section" id="api-metodos">
+    <div class="section-header">
+      <div class="section-number n3">3.1</div>
+      <h2>Métodos HTTP y URLs correctas</h2>
+    </div>
+
+    <div class="callout danger">
+      <span class="callout-icon">❌</span>
+      <div>
+        <strong>MAL (acciones en la URL):</strong><br>
+        <code>/api/getPersonas</code> &nbsp; <code>/api/deletePersona/3</code> &nbsp; <code>/api/crearMascota</code>
+      </div>
+    </div>
+    <div class="callout tip">
+      <span class="callout-icon">✅</span>
+      <div>
+        <strong>BIEN (recurso + método HTTP):</strong><br>
+        <code>GET /api/personas</code> &nbsp; <code>DELETE /api/personas/3</code> &nbsp; <code>POST /api/mascotas</code>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>Método</th><th>Acción</th><th>Ejemplo</th></tr>
+      <tr><td><span class="badge badge-green">GET</span></td><td>Obtener / listar</td><td><code>GET /api/personas</code> → lista todas las personas</td></tr>
+      <tr><td><span class="badge badge-purple">POST</span></td><td>Crear recurso</td><td><code>POST /api/personas</code> + JSON en el body</td></tr>
+      <tr><td><span class="badge badge-yellow">PUT</span></td><td>Reemplazar recurso</td><td><code>PUT /api/personas/3</code> + JSON con todos los campos</td></tr>
+      <tr><td><span class="badge badge-yellow">PATCH</span></td><td>Modificar parcialmente</td><td><code>PATCH /api/personas/3</code> + solo los campos a cambiar</td></tr>
+      <tr><td><span class="badge badge-red">DELETE</span></td><td>Eliminar recurso</td><td><code>DELETE /api/personas/3</code></td></tr>
+    </table>
+  </div>
+
+  <!-- ── Códigos HTTP ── -->
+  <div class="section" id="api-codigos">
+    <div class="section-header">
+      <div class="section-number n3">3.2</div>
+      <h2>Códigos de estado HTTP</h2>
+    </div>
+
+    <p>Una API REST no devuelve mensajes personalizados de error: devuelve <strong>códigos HTTP estándar</strong>. El cliente sabe qué ha pasado por el código.</p>
+
+    <table>
+      <tr><th>Código</th><th>Significado</th><th>Cuándo usarlo</th></tr>
+      <tr><td><span class="badge badge-green">200 OK</span></td><td>Todo correcto</td><td>GET exitoso, DELETE exitoso</td></tr>
+      <tr><td><span class="badge badge-green">201 Created</span></td><td>Recurso creado</td><td>POST exitoso (se crea algo nuevo)</td></tr>
+      <tr><td><span class="badge badge-yellow">400 Bad Request</span></td><td>Petición incorrecta</td><td>Faltan campos obligatorios, datos mal formateados</td></tr>
+      <tr><td><span class="badge badge-red">401 Unauthorized</span></td><td>No autenticado</td><td>Sin credenciales o credenciales incorrectas</td></tr>
+      <tr><td><span class="badge badge-red">404 Not Found</span></td><td>Recurso no encontrado</td><td>DELETE /api/personas/9999 (no existe)</td></tr>
+      <tr><td><span class="badge badge-yellow">405 Method Not Allowed</span></td><td>Método no permitido</td><td>PUT en un endpoint que solo acepta GET</td></tr>
+      <tr><td><span class="badge badge-red">500 Internal Error</span></td><td>Error del servidor</td><td>Fallo en la BD, excepción no controlada</td></tr>
+    </table>
+  </div>
+
+  <!-- ── REST en MVC ── -->
+  <div class="section" id="api-mvc">
+    <div class="section-header">
+      <div class="section-number n3">3.3</div>
+      <h2>¿Cómo encaja REST en MVC?</h2>
+    </div>
+
+    <p>En nuestro proyecto MVC, la API es simplemente <strong>un controlador más</strong> que en vez de llamar a una vista HTML, responde con JSON.</p>
+
+    <table>
+      <tr><th>Capa</th><th>En web normal</th><th>En API REST</th></tr>
+      <tr><td>Modelo</td><td>Igual: accede a la BD</td><td>Igual: accede a la BD</td></tr>
+      <tr><td>Controlador</td><td>Llama a la vista</td><td>Devuelve JSON con <code>json_encode()</code></td></tr>
+      <tr><td>Vista</td><td>HTML</td><td>❌ No existe. El JSON ES la respuesta</td></tr>
+    </table>
+
+    <div class="callout info">
+      <span class="callout-icon">🔑</span>
+      <div>La URL <code>/api/personas</code> llega al <code>Core</code>, que instancia el controlador <code>Api</code> y llama al método <code>personas()</code>. Exactamente igual que con los controladores normales.</div>
+    </div>
+  </div>
+
+  <!-- ── Autenticación Basic ── -->
+  <div class="section" id="api-basic">
+    <div class="section-header">
+      <div class="section-number n3">3.4</div>
+      <h2>Autenticación HTTP Basic</h2>
+    </div>
+
+    <p>Las APIs no usan sesiones. Se autentican con cada petición. La <strong>autenticación HTTP Basic</strong> envía usuario y contraseña codificados en Base64 en la cabecera <code>Authorization</code>.</p>
+
+    <div class="callout warn">
+      <span class="callout-icon">⚠️</span>
+      <div>HTTP Basic en producción solo debe usarse sobre HTTPS. La codificación Base64 NO es cifrado: es reversible. En el examen lo usamos porque es el método más simple de entender.</div>
+    </div>
+
+<pre><code><span class="cm">// El cliente envía esta cabecera:
+// Authorization: Basic YXBpY2xpbmljYTpjbGluaWNhYXBp
+// Que es Base64 de "apiclinica:clinicaapi"</span>
+
+<span class="kw">private function</span> <span class="fn">autenticarBasic</span>(): <span class="kw">void</span> {
+    <span class="vr">$usuario_api</span> = <span class="st">'apiclinica'</span>;
+    <span class="vr">$clave_api</span>   = <span class="st">'clinicaapi'</span>;
+
+    <span class="cm">// PHP decodifica automáticamente la cabecera Basic y rellena estas vars</span>
+    <span class="vr">$usuario</span> = <span class="vr">$_SERVER</span>[<span class="st">'PHP_AUTH_USER'</span>] ?? <span class="st">''</span>;
+    <span class="vr">$clave</span>   = <span class="vr">$_SERVER</span>[<span class="st">'PHP_AUTH_PW'</span>]   ?? <span class="st">''</span>;
+
+    <span class="kw">if</span> (<span class="vr">$usuario</span> !== <span class="vr">$usuario_api</span> || <span class="vr">$clave</span> !== <span class="vr">$clave_api</span>) {
+        <span class="fn">http_response_code</span>(<span class="nb">401</span>);  <span class="cm">// 401 Unauthorized</span>
+        <span class="fn">header</span>(<span class="st">'WWW-Authenticate: Basic realm="API Clínica"'</span>);
+        <span class="fn">header</span>(<span class="st">'Content-Type: application/json; charset=utf-8'</span>);
+        <span class="kw">echo</span> <span class="fn">json_encode</span>([<span class="st">'error'</span> => <span class="st">'No autorizado'</span>]);
+        <span class="fn">exit</span>();  <span class="cm">// detenemos aquí</span>
+    }
+}
+<label>PHP — app/controladores/Api.php</label></code></pre>
+  </div>
+
+  <!-- ── Endpoints completos ── -->
+  <div class="section" id="api-endpoints">
+    <div class="section-header">
+      <div class="section-number n3">3.5</div>
+      <h2>Controlador API completo</h2>
+    </div>
+
+<pre><code><span class="kw">class</span> <span class="cl">Api</span> <span class="kw">extends</span> <span class="cl">Controlador</span> {
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>() {
+        <span class="vr">$this</span>-><span class="fn">autenticarBasic</span>();  <span class="cm">// si no pasa, devuelve 401 y exit</span>
+    }
+
+    <span class="cm">// Método helper: responde JSON y detiene ejecución</span>
+    <span class="kw">private function</span> <span class="fn">jsonResponse</span>(<span class="kw">array</span> <span class="vr">$datos</span>, <span class="kw">int</span> <span class="vr">$codigo</span> = <span class="nb">200</span>): <span class="kw">void</span> {
+        <span class="fn">http_response_code</span>(<span class="vr">$codigo</span>);
+        <span class="fn">header</span>(<span class="st">'Content-Type: application/json; charset=utf-8'</span>);
+        <span class="kw">echo</span> <span class="fn">json_encode</span>(<span class="vr">$datos</span>, <span class="nb">JSON_UNESCAPED_UNICODE</span>);
+        <span class="fn">exit</span>();
+    }
+
+    <span class="cm">// GET  /api/personas  → lista</span>
+    <span class="cm">// POST /api/personas  → crear</span>
+    <span class="kw">public function</span> <span class="fn">personas</span>(): <span class="kw">void</span> {
+        <span class="vr">$metodo</span> = <span class="vr">$_SERVER</span>[<span class="st">'REQUEST_METHOD'</span>];
+
+        <span class="kw">if</span> (<span class="vr">$metodo</span> === <span class="st">'GET'</span>) {
+            <span class="vr">$personas</span> = <span class="vr">$this</span>-><span class="fn">modelo</span>(<span class="st">'Persona'</span>)-><span class="fn">getPersonas</span>();
+            <span class="cm">// Convertimos objetos a arrays para json_encode</span>
+            <span class="vr">$resultado</span> = <span class="fn">array_map</span>(<span class="kw">fn</span>(<span class="vr">$p</span>) => (<span class="kw">array</span>)<span class="vr">$p</span>, <span class="vr">$personas</span>);
+            <span class="vr">$this</span>-><span class="fn">jsonResponse</span>(<span class="vr">$resultado</span>, <span class="nb">200</span>);
+
+        } <span class="kw">elseif</span> (<span class="vr">$metodo</span> === <span class="st">'POST'</span>) {
+            <span class="cm">// Leemos el JSON del body de la petición</span>
+            <span class="vr">$body</span>      = <span class="fn">json_decode</span>(<span class="fn">file_get_contents</span>(<span class="st">'php://input'</span>), <span class="kw">true</span>);
+            <span class="vr">$nombre</span>    = <span class="fn">trim</span>(<span class="vr">$body</span>[<span class="st">'nombre'</span>]    ?? <span class="st">''</span>);
+            <span class="vr">$apellidos</span> = <span class="fn">trim</span>(<span class="vr">$body</span>[<span class="st">'apellidos'</span>] ?? <span class="st">''</span>);
+
+            <span class="kw">if</span> (<span class="fn">empty</span>(<span class="vr">$nombre</span>) || <span class="fn">empty</span>(<span class="vr">$apellidos</span>)) {
+                <span class="vr">$this</span>-><span class="fn">jsonResponse</span>([<span class="st">'error'</span> => <span class="st">'Nombre y apellidos obligatorios'</span>], <span class="nb">400</span>);
+            }
+
+            <span class="vr">$ok</span> = <span class="vr">$this</span>-><span class="fn">modelo</span>(<span class="st">'Persona'</span>)-><span class="fn">insertarPersona</span>(
+                      <span class="vr">$nombre</span>, <span class="vr">$apellidos</span>,
+                      <span class="fn">trim</span>(<span class="vr">$body</span>[<span class="st">'telefono'</span>] ?? <span class="st">''</span>),
+                      <span class="fn">trim</span>(<span class="vr">$body</span>[<span class="st">'email'</span>]    ?? <span class="st">''</span>)
+                  );
+
+            <span class="vr">$this</span>-><span class="fn">jsonResponse</span>(
+                <span class="vr">$ok</span> ? [<span class="st">'mensaje'</span> => <span class="st">'Dueño creado'</span>] : [<span class="st">'error'</span> => <span class="st">'Error al crear'</span>],
+                <span class="vr">$ok</span> ? <span class="nb">201</span> : <span class="nb">500</span>
+            );
+
+        } <span class="kw">else</span> {
+            <span class="vr">$this</span>-><span class="fn">jsonResponse</span>([<span class="st">'error'</span> => <span class="st">'Método no permitido'</span>], <span class="nb">405</span>);
+        }
+    }
+
+    <span class="cm">// DELETE /api/mascota/{id}  → eliminar mascota</span>
+    <span class="kw">public function</span> <span class="fn">mascota</span>(<span class="kw">int</span> <span class="vr">$id</span>): <span class="kw">void</span> {
+        <span class="kw">if</span> (<span class="vr">$_SERVER</span>[<span class="st">'REQUEST_METHOD'</span>] !== <span class="st">'DELETE'</span>) {
+            <span class="vr">$this</span>-><span class="fn">jsonResponse</span>([<span class="st">'error'</span> => <span class="st">'Método no permitido'</span>], <span class="nb">405</span>);
+        }
+
+        <span class="vr">$modelo</span>  = <span class="vr">$this</span>-><span class="fn">modelo</span>(<span class="st">'Mascota'</span>);
+        <span class="vr">$mascota</span> = <span class="vr">$modelo</span>-><span class="fn">getMascotaPorId</span>(<span class="vr">$id</span>);
+
+        <span class="kw">if</span> (!<span class="vr">$mascota</span>) {
+            <span class="vr">$this</span>-><span class="fn">jsonResponse</span>([<span class="st">'error'</span> => <span class="st">"Mascota {$id} no encontrada"</span>], <span class="nb">404</span>);
+        }
+
+        <span class="vr">$ok</span> = <span class="vr">$modelo</span>-><span class="fn">eliminarMascota</span>(<span class="vr">$id</span>);
+        <span class="vr">$this</span>-><span class="fn">jsonResponse</span>(
+            <span class="vr">$ok</span> ? [<span class="st">'mensaje'</span> => <span class="st">"Mascota {$id} eliminada"</span>] : [<span class="st">'error'</span> => <span class="st">'Error'</span>],
+            <span class="vr">$ok</span> ? <span class="nb">200</span> : <span class="nb">500</span>
+        );
+    }
+}
+<label>PHP — app/controladores/Api.php</label></code></pre>
+  </div>
+
+  <!-- ── Probar con curl ── -->
+  <div class="section" id="api-curl">
+    <div class="section-header">
+      <div class="section-number n3">3.6</div>
+      <h2>Probar la API con curl y archivo .http</h2>
+    </div>
+
+    <p>Hay dos formas de probar la API sin necesitar un frontend:</p>
+
+    <h3>Opción A: curl desde la terminal</h3>
+    <p><code>curl</code> es una herramienta de línea de comandos para hacer peticiones HTTP.</p>
+
+<pre><code><span class="cm"># GET: obtener todas las personas</span>
+curl -u apiclinica:clinicaapi \
+     http://localhost/mvcrecuperacion/public/api/personas
+
+<span class="cm"># POST: crear nueva persona (enviamos JSON en el body)</span>
+curl -u apiclinica:clinicaapi \
+     -X POST \
+     -H <span class="st">"Content-Type: application/json"</span> \
+     -d <span class="st">'{"nombre":"Pedro","apellidos":"Sanz","email":"pedro@test.com"}'</span> \
+     http://localhost/mvcrecuperacion/public/api/personas
+
+<span class="cm"># DELETE: eliminar mascota con id 2</span>
+curl -u apiclinica:clinicaapi \
+     -X DELETE \
+     http://localhost/mvcrecuperacion/public/api/mascota/2
+<label>BASH</label></code></pre>
+
+    <h3>Opción B: archivo .http (VS Code + extensión REST Client)</h3>
+    <p>Instala la extensión <strong>REST Client</strong> en VS Code. Crea un archivo <code>api_tests.http</code> y haz clic en "Send Request" encima de cada bloque:</p>
+
+<pre><code><span class="cm"># Credenciales en Base64: apiclinica:clinicaapi</span>
+@baseUrl = http://localhost/mvcrecuperacion/public
+
+<span class="cm">### GET – Listar personas</span>
+GET {{baseUrl}}/api/personas
+Authorization: Basic YXBpY2xpbmljYTpjbGluaWNhYXBp
+
+<span class="cm">###</span>
+
+<span class="cm">### POST – Crear persona</span>
+POST {{baseUrl}}/api/personas
+Authorization: Basic YXBpY2xpbmljYTpjbGluaWNhYXBp
+Content-Type: application/json
+
+{
+    "nombre": "Pedro",
+    "apellidos": "Sanz",
+    "telefono": "611222333",
+    "email": "pedro@test.com"
+}
+
+<span class="cm">###</span>
+
+<span class="cm">### DELETE – Eliminar mascota id 1</span>
+DELETE {{baseUrl}}/api/mascota/1
+Authorization: Basic YXBpY2xpbmljYTpjbGluaWNhYXBp
+<label>.http</label></code></pre>
+
+    <div class="callout tip">
+      <span class="callout-icon">🔢</span>
+      <div>Para calcular el Base64 de <code>apiclinica:clinicaapi</code> puedes ejecutar en la terminal: <code>echo -n "apiclinica:clinicaapi" | base64</code></div>
+    </div>
+
+    <h3>Respuestas JSON esperadas</h3>
+
+<pre><code><span class="cm">// GET /api/personas → 200 OK</span>
+[
+    { <span class="st">"id"</span>: <span class="nb">1</span>, <span class="st">"nombre"</span>: <span class="st">"Juan"</span>, <span class="st">"apellidos"</span>: <span class="st">"Pérez"</span>, ... },
+    { <span class="st">"id"</span>: <span class="nb">2</span>, <span class="st">"nombre"</span>: <span class="st">"Ana"</span>,  <span class="st">"apellidos"</span>: <span class="st">"López"</span>, ... }
+]
+
+<span class="cm">// POST /api/personas → 201 Created</span>
+{ <span class="st">"mensaje"</span>: <span class="st">"Dueño creado correctamente."</span> }
+
+<span class="cm">// POST con campos vacíos → 400 Bad Request</span>
+{ <span class="st">"error"</span>: <span class="st">"Nombre y apellidos obligatorios."</span> }
+
+<span class="cm">// DELETE /api/mascota/9999 (no existe) → 404 Not Found</span>
+{ <span class="st">"error"</span>: <span class="st">"Mascota 9999 no encontrada."</span> }
+
+<span class="cm">// Sin cabecera Authorization → 401 Unauthorized</span>
+{ <span class="st">"error"</span>: <span class="st">"No autorizado."</span> }
+<label>JSON</label></code></pre>
+  </div>
+
+  <!-- ══ RESUMEN FINAL ══ -->
+  <div class="section" id="resumen">
+    <div class="section-header">
+      <div class="section-number n4">★</div>
+      <h2>Resumen: lo que más cae en el examen</h2>
+    </div>
+
+    <h3>OOP</h3>
+    <ul>
+      <li><code>public</code> = todos, <code>protected</code> = yo y mis hijas, <code>private</code> = solo yo.</li>
+      <li><code>extends</code> para heredar de una clase, <code>implements</code> para implementar una interfaz.</li>
+      <li>Las clases <code>abstract</code> no se instancian. Sus métodos <code>abstract</code> obligan a la hija a implementarlos.</li>
+      <li>Los <code>trait</code> son bloques de código reutilizable que se "pegan" con <code>use</code>.</li>
+      <li>El <code>namespace</code> organiza el código. Siempre al principio del archivo. Cambiarlo → <code>composer dump-autoload</code>.</li>
+    </ul>
+
+    <h3>MVC</h3>
+    <ul>
+      <li><strong>Modelo:</strong> solo SQL con PDO y sentencias preparadas (<code>bind()</code>). Nunca HTML.</li>
+      <li><strong>Controlador:</strong> recoge <code>$_POST</code>, valida con <code>trim()</code> + <code>filter_var()</code> + <code>preg_match()</code>, llama al modelo, llama a la vista.</li>
+      <li><strong>Vista:</strong> solo HTML + <code>foreach</code>. Siempre <code>htmlspecialchars()</code> para mostrar datos.</li>
+      <li><strong>Sesión:</strong> <code>session_start()</code> antes de usar <code>$_SESSION</code>. Login → guardar en <code>$_SESSION</code>. Logout → <code>session_unset() + session_destroy()</code>.</li>
+      <li><strong>Subida de archivos:</strong> <code>enctype="multipart/form-data"</code> en el form. <code>$_FILES['foto']</code>. <code>move_uploaded_file()</code> para moverlo.</li>
+    </ul>
+
+    <h3>APIs REST</h3>
+    <ul>
+      <li>La API es un controlador que responde JSON, no HTML.</li>
+      <li>Leer el método HTTP con <code>$_SERVER['REQUEST_METHOD']</code>.</li>
+      <li>Leer el JSON del body con <code>json_decode(file_get_contents('php://input'), true)</code>.</li>
+      <li>Responder con <code>http_response_code($codigo)</code> + <code>header('Content-Type: application/json')</code> + <code>json_encode($datos)</code>.</li>
+      <li>Autenticación Basic: <code>$_SERVER['PHP_AUTH_USER']</code> y <code>$_SERVER['PHP_AUTH_PW']</code>.</li>
+      <li>Códigos: 200 (ok), 201 (creado), 400 (datos mal), 401 (sin auth), 404 (no existe), 405 (método no permitido), 500 (error BD).</li>
+    </ul>
+  </div>
+
+</main>
+
+<script>
+  // Resaltar enlace activo en el sidebar al hacer scroll
+  const sections = document.querySelectorAll('.section[id]');
+  const links    = document.querySelectorAll('#sidebar nav a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        links.forEach(l => {
+          l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
