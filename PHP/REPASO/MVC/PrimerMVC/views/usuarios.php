@@ -8,9 +8,19 @@
 <body>
     <h1>Lista de usuarios</h1>
     <ul>
-        <?php foreach ($users as $user): ?>
-            <li><?php echo $user; ?> </li>
+        <?php foreach ($users as $index => $user): ?>
+            <li>
+                <?php echo $user; ?> 
+                <a href="?id=<?php echo $index; ?>">Eliminar</a>
+                <a href="?id=<?php echo $index; ?>">Editar</a>
+            </li>
         <?php endforeach; ?>
     </ul>
+    <form method="POST">
+        <input type="text" name="nombre" placeholder="Nombre">
+        <button type="submit">
+            Crear usuario 
+        </button>
+    </form>
 </body>
 </html>

@@ -1,0 +1,22 @@
+{
+    "name": "usuario/mvcrecuperacion",
+    "description": "Examen de recuperacion",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Usuario\\Mvcrecuperacion\\": [
+              "app/librerias",
+              "app/controladores",
+              "app/modelos"
+            ]
+
+        }
+    },
+    "authors": [
+        {
+            "name": "César López",
+            "email": "clopezs@iescomercio.com"
+        }
+    ],
+    "require": {}
+}
