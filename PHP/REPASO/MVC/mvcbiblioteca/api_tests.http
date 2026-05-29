@@ -1,6 +1,24 @@
-@baseUrl = http://localhost/dwes/mvcrecuperacion
+@baseUrl = http://localhost/mvcbiblioteca/public
 
-### LISTAR
+### GET – Listar todos los autores
+GET {{baseUrl}}/api/autores
+Authorization: Basic YXBpYmlibGlvdGVjYTpiaWJsaW90ZWNhMjAyNg==
 
+###
 
-### CREAR
+### POST – Crear un nuevo autor
+POST {{baseUrl}}/api/autores
+Authorization: Basic YXBpYmlibGlvdGVjYTpiaWJsaW90ZWNhMjAyNg==
+Content-Type: application/json
+
+{
+    "nombre": "Ernest",
+    "apellidos": "Hemingway",
+    "pais": "Estados Unidos"
+}
+
+###
+
+### DELETE – Eliminar libro con id 1
+DELETE {{baseUrl}}/api/libro/1
+Authorization: Basic YXBpYmlibGlvdGVjYTpiaWJsaW90ZWNhMjAyNg==

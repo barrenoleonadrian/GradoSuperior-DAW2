@@ -1,9 +1,12 @@
-<?php require_once RUTA_APP.'/vistas/inc/header.php';?>
-<h1><?php echo $datos['titulo'];?></h1>
-<h2>Página de inicio del Framework php MVC</h2>
+<?php require_once RUTA_APP . '/vistas/inc/header.php'; ?>
 
-<a href="<?=RUTA_URL;?>">Inicio</a>
+<h1><?= htmlspecialchars($titulo) ?></h1>
 
+<ul>
+    <li><a href="<?= RUTA_URL ?>/autores/index">Ver autores</a></li>
+    <li><a href="<?= RUTA_URL ?>/autores/nuevo">Añadir autor</a></li>
+    <li><a href="<?= RUTA_URL ?>/libros/index">Ver libros</a></li>
+    <li><a href="<?= RUTA_URL ?>/libros/nuevo">Añadir libro</a></li>
+</ul>
 
-<?php require_once RUTA_APP.'/vistas/inc/footer.php';?>
-
+<?php require_once RUTA_APP . '/vistas/inc/footer.php'; ?>

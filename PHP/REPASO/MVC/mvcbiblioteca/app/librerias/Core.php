@@ -1,5 +1,5 @@
 <?php
-namespace Usuario\Mvcrecuperacion;
+namespace Dwes\Biblioteca;
 
 /**
 Mapear URL desde el navegador

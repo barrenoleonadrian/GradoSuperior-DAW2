@@ -4,7 +4,7 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Usuario\\Mvcrecuperacion\\": [
+            "Dwes\\Biblioteca\\": [
               "app/librerias",
               "app/controladores",
               "app/modelos"
@@ -14,7 +14,7 @@
     },
     "authors": [
         {
-            "name": "César López",
+            "name": "Adrian Barreno",
             "email": "clopezs@iescomercio.com"
         }
     ],

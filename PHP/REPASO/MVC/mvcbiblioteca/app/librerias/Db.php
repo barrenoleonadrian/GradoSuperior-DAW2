@@ -1,5 +1,5 @@
 <?php
-namespace Usuario\Mvcrecuperacion;
+namespace Dwes\Biblioteca;
 
 use PDO;
 use PDOException;
